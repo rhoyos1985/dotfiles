@@ -22,6 +22,7 @@ alias dfree='df -h'
 alias rr='source ~/.bashrc'
 alias xx='xmodmap ~/.xmodmap'
 alias aliases='vim ~/dotfiles/.bash/aliases'
+alias rbash='source .bashrc'
 
 # xfce settings
 alias logout='xfce4-session-logout --logout'
