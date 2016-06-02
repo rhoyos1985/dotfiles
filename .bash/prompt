@@ -1,3 +1,4 @@
+#!/bin/bash
 source ~/dotfiles/.bash/colors 
 
 git_prompt ()
