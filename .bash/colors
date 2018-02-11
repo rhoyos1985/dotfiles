@@ -21,9 +21,11 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
     COLOR_BROWN='\e[0;33m'
     COLOR_YELLOW='\e[1;33m'
     COLOR_GRAY='\e[1;30m'
-    COLOR_LIGHT_GRAY='\e[0;37m'
+
+COLOR_LIGHT_GRAY='\e[0;37m'
 else
-    c_reset=
+ 
+ c_reset=
     c_user=
     c_path=
     c_git_clean=
