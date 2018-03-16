@@ -1,24 +1,88 @@
 #!/bin/bash
 source ~/dotfiles/.bash/colors 
+# Shell prompt based on the Solarized Dark theme.
+# Screenshot: http://i.imgur.com/EkEtphC.png
+# Heavily inspired by @necolas’s prompt: https://github.com/necolas/dotfiles
+# iTerm → Profiles → Text → use 13pt Monaco with 1.1 vertical spacing.
 
-git_prompt ()
-{
-    if ! git rev-parse --git-dir > /dev/null 2>&1; then
-        return 0
-    fi
 
-    git_branch=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
+prompt_git() {
+  local s='';
+  local branchName='';
 
-    if git diff --quiet 2>/dev/null >&2; then
-        git_color="${c_git_clean}"
-    else
-        git_color=${c_git_dirty}
-    fi
+  # Check if the current directory is in a Git repository.
+  if [ $(git rev-parse --is-inside-work-tree &>/dev/null; echo "${?}") == '0'  ]; then
+    
+    # check if the current directory is in .git before running git checks
+    if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" == 'false'  ]; then
 
-    echo " [$git_color$git_branch${c_reset}]"
+      # Ensure the index is up to date.
+      git update-index --really-refresh -q &>/dev/null;
+
+      # Check for uncommitted changes in the index.
+      if ! $(git diff --quiet --ignore-submodules --cached); then
+        s+='+';
+      fi;
+
+      # Check for unstaged changes.
+      if ! $(git diff-files --quiet --ignore-submodules --); then
+        s+='!';
+      fi;
+
+      # Check for untracked files.
+      if [ -n "$(git ls-files --others --exclude-standard)"  ]; then
+        s+='?';
+      fi;
+      
+      # Check for stashed files.
+      if $(git rev-parse --verify refs/stash &>/dev/null); then
+        s+='$';
+      fi;
+
+    fi;
+
+    # Get the short symbolic ref.
+    # If HEAD isn’t a symbolic ref, get the short SHA for the latest commit
+    # Otherwise, just give up.
+    branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
+                  git rev-parse --short HEAD 2> /dev/null || \
+                  echo '(unknown)')";
+
+    [ -n "${s}"  ] && s=" [${s}]";
+
+    echo -e "${1}${branchName}${2}${s}";
+  else
+    return;
+  fi; 
 }
-
-PROMPT_COMMAND='PS1="${COLOR_GREEN}gtrujillo${c_reset}: ${COLOR_BROWN}\w ($(rvm-prompt))${c_reset}$(git_prompt) \$ "'
-
-export PS2='________________________________________________________________________________\n|\033[1;35m \w \033[00m \033[1;36m\u \033[00m @ \033[1;36m\t \033[00m\033[1;31m  \033[00m\n=> '
-export PS3="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
+                                                       
+# Highlight the user name when logged in as root.
+if [[ "${USER}" == "root"  ]]; then
+  userStyle="${COLOR_RED}";
+else
+  userStyle="${COLOR_BLUE}";
+fi;
+                                           
+# Highlight the hostname when connected via SSH.
+if [[ "${SSH_TTY}"  ]]; then
+  hostStyle="${COLOR_RED}";
+else
+  hostStyle="${COLOR_YELLOW}";
+fi;
+                                                                
+# Set the terminal title and prompt.
+PS1="\[\033]0;\W\007\]"; # working directory base name
+PS1+="\[${bold}\]\n"; # newline
+PS1+="\[${userStyle}\]\u"; # username
+PS1+="\[${COLOR_WHITE}\] at ";
+PS1+="\[${hostStyle}\]\h"; # host
+PS1+="\[${COLOR_WHITE}\] in ";
+PS1+="\[${COLOR_LIGHT_GREEN}\]\w"; # working directory full path
+PS1+="\$(prompt_git \"\[${COLOR_WHITE}\] on \[${COLOR_LIGHT_PURPLE}\]\" \"\[${COLOR_CYAN}\]\") "; # Git repository details
+PS1+="\[${COLOR_BLUE} ($(rvm-prompt)) \]";
+PS1+="\n";
+PS1+="\[${COLOR_WHITE}\]\$ \[${reset}\]"; # `$` (and reset color)
+export PS1;
+                                                                
+PS2="\[${COLOR_YELLOW}\]→ \[${reset}\]";
+export PS2;

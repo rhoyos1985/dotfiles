@@ -32,6 +32,7 @@ Plugin 'vim-ruby/vim-ruby'
 Plugin 'Shougo/neocomplete'
 " Themes
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'flazz/vim-colorschemes'
 
 " Slim syntax highlight
 Plugin 'slim-template/vim-slim.git'
@@ -206,7 +207,7 @@ map <Leader>l :call RunLastSpec()<CR>
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 1
 let g:bufferline_echo = 0
-let g:airline_theme='solarized'
+let g:airline_theme='papercolor'
 let g:airline_section_c = ''
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline_powerline_fonts = 1
@@ -272,5 +273,6 @@ let g:ale_lint_on_text_changed="never"
 let g:ale_lint_on_enter=0
 map <Leader>a :ALELint<CR>
 
-let g:solarized_termcolors=256
-colorscheme solarized
+
+" let g:solarized_termcolors=256
+" colorscheme papercolor

@@ -15,6 +15,15 @@ export HISTTIMEFORMAT='%Y-%b-%d %a %H:%M:%S - '
 export PROMPT_COMMAND='history -a'
 
 alias gm='git commit -m'
+alias gs='git status'
+alias gcb='git checkout -b'
+alias gc='git checkout'
+alias ga='git add'
+alias gp='git push origin'
+alias foreman='foreman start -f Procfile.client-static'
+alias rjw='bundle exec rake jobs:work'
+
+alias infodocuments='vim ~/Documents/Text/txt/'
 
 alias dspace='du -h --max-depth=1'
 alias dfree='df -h'
@@ -32,5 +41,5 @@ alias settings='xfce4-settings-manager'
 alias tmux='tmux -2'
 alias screen='TERM=xterm-256color screen'
 
-alias dentalzon='/home/gtrujillop/Documents/development/ruby/dentalzon'
-alias deployer='/home/gtrujillop/Documents/development/ruby/deployer'
+alias dentalzon='cd /home/richard/Documents/Development/ruby/dentalzon'
+alias alblog='cd /home/richard/Documents/Development/ruby/udemy/homeworkruby/ruby_on_rails/alpha-blog'
