@@ -21,22 +21,22 @@ prompt_git() {
 
       # Check for uncommitted changes in the index.
       if ! $(git diff --quiet --ignore-submodules --cached); then
-        s+='+';
+        s+='🚨';
       fi;
 
       # Check for unstaged changes.
       if ! $(git diff-files --quiet --ignore-submodules --); then
-        s+='!';
+        s+='✋';
       fi;
 
       # Check for untracked files.
       if [ -n "$(git ls-files --others --exclude-standard)"  ]; then
-        s+='?';
+        s+='❔';
       fi;
       
       # Check for stashed files.
       if $(git rev-parse --verify refs/stash &>/dev/null); then
-        s+='$';
+        s+='✌';
       fi;
 
     fi;
@@ -58,14 +58,14 @@ prompt_git() {
                                                        
 # Highlight the user name when logged in as root.
 if [[ "${USER}" == "root"  ]]; then
-  userStyle="${COLOR_RED}";
+  userStyle="${COLOR_LIGHT_RED}";
 else
-  userStyle="${COLOR_BLUE}";
+  userStyle="${COLOR_ORANGE}";
 fi;
                                            
 # Highlight the hostname when connected via SSH.
 if [[ "${SSH_TTY}"  ]]; then
-  hostStyle="${COLOR_RED}";
+  hostStyle="${COLOR_LIGHT_RED}";
 else
   hostStyle="${COLOR_YELLOW}";
 fi;
@@ -79,10 +79,11 @@ PS1+="\[${hostStyle}\]\h"; # host
 PS1+="\[${COLOR_WHITE}\] in ";
 PS1+="\[${COLOR_LIGHT_GREEN}\]\w"; # working directory full path
 PS1+="\$(prompt_git \"\[${COLOR_WHITE}\] on \[${COLOR_LIGHT_PURPLE}\]\" \"\[${COLOR_CYAN}\]\") "; # Git repository details
-PS1+="\[${COLOR_BLUE} ($(rvm-prompt)) \]";
+PS1+="\[${COLOR_BLUE} ($(~/.rvm/bin/rvm-prompt)) \]";
 PS1+="\n";
 PS1+="\[${COLOR_WHITE}\]\$ \[${reset}\]"; # `$` (and reset color)
 export PS1;
-                                                                
-PS2="\[${COLOR_YELLOW}\]→ \[${reset}\]";
+
+PS2="\[${bold}\]\n"
+PS2+="\[${COLOR_YELLOW}\]→ \[${reset}\]";
 export PS2;
